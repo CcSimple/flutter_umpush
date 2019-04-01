@@ -43,6 +43,14 @@ class FlutterUmpush {
     _channel.invokeMethod('test');
   }
 
+  Future<bool> setAlias(alias,type) async {
+    final Map<String, dynamic> params = <String, dynamic>{
+      'alias': alias,
+      'type': type,
+    };
+    return await _channel.invokeMethod('setAlias', params);
+  }
+
   Future<Null> _handleMethod(MethodCall call) async {
     switch (call.method) {
       case "onToken":
