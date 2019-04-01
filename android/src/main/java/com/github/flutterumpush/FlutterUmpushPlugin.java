@@ -2,6 +2,9 @@ package com.github.flutterumpush;
 
 import android.util.Log;
 
+import com.umeng.message.PushAgent;
+import com.umeng.message.UTrack;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -28,7 +31,7 @@ public class FlutterUmpushPlugin
 
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
+    public void onMethodCall(MethodCall call, final Result result) {
         Log.i(TAG, "onMethodCall: " + call.toString());
         if ("configure".equals(call.method)) {
             //当通过友盟离线唤醒的时候，系统首先执行的是UmengOtherPushActivity，而MainActivity尚未启动
@@ -81,6 +84,23 @@ public class FlutterUmpushPlugin
         } else if ("test".equals(call.method)) {
             channel.invokeMethod("onMessage", "hello");
             result.success(null);
+        } else if ("setAlias".equals(call.method)) {
+            String alias  = call.argument("alias").toString();
+            String type = call.argument("type").toString();
+            Log.i(TAG, "setAlias: alias: " + alias);
+            Log.i(TAG, "setAlias: type: " + type);
+            try {
+                PushAgent pushAgent = PushAgent.getInstance(registrar.activity().getApplication());
+                pushAgent.setAlias(alias, type, new UTrack.ICallBack() {
+                    @Override
+                    public void onMessage(boolean isSuccess, String message) {
+                        Log.i(TAG, "setAlias: " + isSuccess + " message: " + message);
+                        result.success(isSuccess);
+                    }
+                });
+            } catch (Exception e) {
+                Log.i(TAG, "setAlias: Exception: " + e.getMessage());
+            }
         } else {
             result.notImplemented();
         }
