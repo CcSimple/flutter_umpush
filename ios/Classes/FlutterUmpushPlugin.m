@@ -48,6 +48,16 @@
         result(nil);
     }else if([@"test" isEqualToString:method]) {
         result(@"hello");
+    }else if([@"setAlias" isEqualToString:method]) {
+        NSString *alias = call.arguments[@"alias"];
+        NSString *type = call.arguments[@"type"];
+        [UMessage setAlias:alias type:type response:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
+            if (responseObject) {
+                if ([[responseObject objectForKey:@"success"] isEqualToString:@"ok"]) {
+                    result(YES);
+                }
+            }
+        }];
     }else {
         result(FlutterMethodNotImplemented);
     }
