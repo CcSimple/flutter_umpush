@@ -54,7 +54,7 @@
         [UMessage setAlias:alias type:type response:^(id  _Nonnull responseObject, NSError * _Nonnull error) {
             if (responseObject) {
                 if ([[responseObject objectForKey:@"success"] isEqualToString:@"ok"]) {
-                    result(YES);
+                    result(@YES);
                 }
             }
         }];
